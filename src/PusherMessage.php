@@ -43,11 +43,11 @@ class PusherMessage
     protected array $options = [];
 
     /**
-     * An extra message to the other platform.
+     * An extra messages to the other platforms.
      *
      * @var
      */
-    protected PusherMessage|null $extraMessage = null;
+    protected array|null $extraMessage = null;
 
     /**
      * @param  string  $body
@@ -179,7 +179,7 @@ class PusherMessage
             throw CouldNotCreateMessage::platformConflict($this->platform);
         }
 
-        $this->extraMessage = $message;
+        $this->extraMessage[] = $message;
     }
 
     /**
@@ -376,7 +376,9 @@ class PusherMessage
     private function formatMessage(&$message): void
     {
         if ($this->extraMessage) {
-            $message = array_merge($message, $this->extraMessage->toArray());
+            foreach($this->extraMessage as $item) {
+                $message = array_merge($message, $item->toArray());
+            }
         }
 
         foreach ($this->options as $option => $value) {
